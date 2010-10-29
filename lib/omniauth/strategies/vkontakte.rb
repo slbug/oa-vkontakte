@@ -35,7 +35,7 @@ module OmniAuth
         
         raise CallbackError.new if app_cookie.nil?
         
-        valid = vkontakte_sign == app_cookie.split('&')[-1].split('=')[1]
+        valid = vkontakte_sign(app_cookie) == app_cookie.split('&')[-1].split('=')[1]
 
         raise CallbackError.new if !valid
 
