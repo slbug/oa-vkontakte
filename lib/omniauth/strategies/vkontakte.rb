@@ -3,6 +3,12 @@ require 'omniauth/strategies/vkontakte/view_helper'
 require 'digest/md5'
 
 module OmniAuth
+  class Configuration
+    attr_accessor :vkontakte_app_id
+  end
+end
+
+module OmniAuth
   module Strategies
     class Vkontakte
       include OmniAuth::Strategy
@@ -20,7 +26,7 @@ module OmniAuth
       def initialize(app, app_id, app_secret, options = {})
         super(app, :vkontakte)
         @options = options
-        @app_id = app_id
+        OmniAuth.config.vkontakte_app_id = @app_id = app_id
         @app_secret = app_secret
       end
       

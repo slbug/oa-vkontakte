@@ -11,7 +11,7 @@ module OmniAuth
   
     jQuery(document).ready(function($) {
       VK.init({
-        apiId: '#{OmniAuth::Strategies::Vkontakte.app_id}',
+        apiId: '#{OmniAuth.config.vkontakte_app_id}',
         nameTransportPath: "/xd_receiver.html"
       });
   
