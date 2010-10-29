@@ -101,7 +101,7 @@ HEADER
     putUserProfile: function (data) {
       if (data.response) {
         r = data.response;
-        vkLogin.redirectWithPost('#{OmniAuth.config.path_prefix}/vkontakte/callback', r.me);
+        vkLogin.redirectWithPost('#{OmniAuth.config.path_prefix}/vkontakte_open_api/callback', r.me);
       }
     }
 	};

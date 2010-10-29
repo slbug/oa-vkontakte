@@ -4,6 +4,7 @@ require 'omniauth/strategies/vkontakte_open_api/view_helper'
 module OmniAuth
   class Configuration
     attr_accessor :vkontakte_app_id
+    attr_accessor :vkontakte_app_secret
   end
 end
 
@@ -13,16 +14,33 @@ module OmniAuth
       include OmniAuth::Strategy
       include ViewHelper::PageHelper
 
-      def initialize(app, app_id, options = {})
+      def initialize(app, app_id, app_secret, options = {})
         @options = options
         OmniAuth.config.vkontakte_app_id = app_id
-        super(app, :vkontakte)
+        OmniAuth.config.vkontakte_app_secret = app_secret
+        super(app, :vkontakte_open_api)
       end
 
-      attr_reader :app_id
+      attr_reader :app_id, :app_secret
+      
+      protected
       
       def request_phase
         Rack::Response.new(vkontakte_login_page).finish
+      end
+      
+      def callback_phase
+        app_cookie = request.cookies['vk_app_' + OmniAuth.config.vkontakte_app_id]
+        if app_cookie.nil?
+          fail!(:invalid_credentials)
+        else
+          sig = Digest::MD5.new.hexdigest(app_cookie.split('&').sort[0..3].join('') + OmniAuth.config.vkontakte_app_secret) == app_cookie.split('&')[-1].split('=')[1]
+          if sig
+            super
+          else
+            fail!(:invalid_credentials)
+          end
+        end
       end
       
       def auth_hash
