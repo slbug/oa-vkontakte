@@ -1,7 +1,7 @@
 # coding: utf-8
 module OmniAuth
   module Strategies
-    class VkontakteOpenApi
+    class Vkontakte
       class ViewHelper
         module PageHelper
           def vkontakte_login_page
@@ -28,7 +28,7 @@ HEADER
 <script type="text/javascript">
   window.vkAsyncInit = function() {
     VK.init({
-      apiId: '#{OmniAuth.config.vkontakte_app_id}',
+      apiId: '#{@app_id}',
       nameTransportPath: "/xd_receiver.html"
     });
     VK.UI.button('vk_login');
@@ -101,7 +101,7 @@ HEADER
     putUserProfile: function (data) {
       if (data.response) {
         r = data.response;
-        vkLogin.redirectWithPost('#{OmniAuth.config.path_prefix}/vkontakte_open_api/callback', r.me);
+        vkLogin.redirectWithPost('#{OmniAuth.config.path_prefix}/vkontakte/callback', r.me);
       }
     }
 	};
