@@ -4,6 +4,53 @@ module OmniAuth
     class Vkontakte
       class ViewHelper
         module PageHelper
+          def vkontakte_scripts(form_id='vkontakte_app_form')
+<<-SCRIPT
+  #{javascript_include_tag('http://vkontakte.ru/js/api/openapi.js')}
+  <script type="text/javascript">
+  
+    jQuery(document).ready(function($) {
+      VK.init({
+        apiId: '#{@app_id}',
+        nameTransportPath: "/xd_receiver.html"
+      });
+  
+      $('#auth_vkontakte').click(function(){
+    
+        VK.Auth.login(function(response){
+      
+          if (response.session) {
+            VK.Api.call('execute', {
+              'code': 'return { me: API.getProfiles({uids: API.getVariable({key: 1280}), fields: "nickname,sex,photo"})[0] };'
+            }, 
+            function(data) {
+               if (typeof(data.response) != 'undefined') {
+                 form = $('##{form_id}');
+                 form.attr("action", "#{OmniAuth.config.path_prefix}/vkontakte/callback");
+                 form.attr("method", 'get');
+                 for (property in data.response.me) {
+                   input = $(document.createElement("input"));
+                   input.attr("type", "hidden");
+                   input.attr("name", property);
+                   input.attr("value", data.response.me[property]);
+                   input.appendTo(form);
+                 }
+                 form.submit();
+               } else {
+                 alert('auth failed, try again later');
+               }
+             });
+          }
+        });
+    
+        return false;
+      });
+    });
+    
+  </script>
+SCRIPT
+          end
+          
           def vkontakte_login_page
             vkontakte_header +
             vkontakte_login_button +
