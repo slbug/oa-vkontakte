@@ -15,7 +15,7 @@ module OmniAuth
         nameTransportPath: "/xd_receiver.html"
       });
   
-      $('#auth_vkontakte').click(function(){
+      $('#auth_vkontakte').live('click', function(){
     
         VK.Auth.login(function(response){
       
